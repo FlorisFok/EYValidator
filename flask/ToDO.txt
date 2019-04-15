@@ -1,0 +1,6 @@
+- return of csv creation
+- memory display number instead of compare
+- result + SUM = weird
+- 
+- img to pdf
+- more image editing?

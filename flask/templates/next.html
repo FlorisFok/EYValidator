@@ -27,16 +27,28 @@
 				<div class="row">
 					<div class="mycol1 underImage">
 						<div class="balk">
-							<form id="back" action="/page" method="post">
-								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
-								<input type="hidden" class="pag" name="pagenum" value="{{ prevnumber }}" required>
-								<input type="submit" value="<<<" />
-							</form>
-							<form id="forward" action="/page" method="post">
-								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
-								<input type="hidden" class="pag" name="pagenum" value="{{ nextnumber }}" required>
-								<input type="submit" value=">>>" />
-							</form>
+              <span style="position:absolute;left: 0px;">
+  							<form id="back" action="/page" method="post">
+  								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
+  								<input type="hidden" class="pag" name="pagenum" value="{{ prevnumber }}" required>
+  								<input type="submit" value="<<< Previous" />
+  							</form>
+              </span>
+              <span style="position:absolute;left: 45%;">
+                <form id="middle" action="/page" method="post">
+                  <input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
+                  <input style="width:100px; background-color:white" type="text" name="pagenum" placeholder="Page">
+                  <input type="submit" value="Open" style="background-color:#ffe600">
+                </form>
+              </span>
+              <span style="position:absolute;right: 10px;">
+  							<form id="forward" action="/page" method="post">
+  								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
+  								<input id="page_number" type="hidden" class="pag" name="pagenum" value="{{ nextnumber }}" required>
+  								<input type="submit" value="Next >>>" />
+  							</form>
+              </span>
+
 						</div>
 						<img id="oik" src="{{ img }}" />
 					</div>
@@ -53,19 +65,29 @@
 								<input type="hidden" name="x2" id="x2" value="" />
 								<input type="hidden" name="y2" id="y2" value="" />
 								<input type="hidden" name="imgsrc" id="imgsrc" value="{{ img }}" />
-                <select style="width:150px;  padding:4px;"  id="style_select">
-                  <option value="ASum">Auto Sum</option>
-                  <option value="Sum">Sum</option>
-                  <option value="Multiply">Multiply</option>
-                  <option value="Divide">Divide</option>
-                  <option value='Mem'>Place in memory</option>
-                  <option value='csv'>create CSV</option>
-                </select>
-  							<input type="submit" name="action" id="action" value="Submit area" class="submitbtn" />
+                <div style="padding:5px;">
+                  <select style="width:49%;  padding:4px;"  id="action_select">
+                    <option value="auto">Auto</option>
+                    <option value="memory">Memory</option>
+                    <option value="result">result</option>
+                  </select>
+                  <select style="width:49%;  padding:4px;"  id="style_select">
+                    <option value="Sum">Sum</option>
+                    <option value="Multiply">Multiply</option>
+                    <option value="Divide">Divide</option>
+                  </select>
+                </div>
+                <div style="padding:10px">
+  							  <input type="submit" name="action" id="action" value="Submit area" class="submitbtn" />
+                </div>
             </form>
             <form id="CSV">
-              <input type="text" id='filenamecsv' style="width: 150px; padding:4px;" placeholder="name csv"/>
-              <input type='submit' value='Save to CSV' class="submitbtn"/>
+              <div>
+                <input style='width:100%;' autocomplete="off" type="text" id='filenamecsv' placeholder="name csv"/>
+              </div style="padding:5px;">
+              <div style="padding:10px">
+                <input type='submit' value='Save to CSV' class="submitbtn"/>
+              </div>
             </form>
 					</div>
 				</div>
@@ -99,7 +121,9 @@
 
       // Save button selection and image source
 			let imgsrc = document.querySelector("#imgsrc").value;
-      let btn_value = document.querySelector("#style_select").value;
+      let style = document.querySelector("#style_select").value;
+      let action = document.querySelector("#action_select").value;
+      let page = document.querySelector("#page_number").value;
 
 			// set up ajax request
 			const request = new XMLHttpRequest();
@@ -108,9 +132,10 @@
 			// if data is recieved, check the awnser
 			request.onload = () => {
 				const data = JSON.parse(request.responseText);
-
+        console.log(data);
 				if (data.success) {
           const table = document.querySelector("#data_total");
+          const diff = data.totalparsed - data.total;
           // Remove existing
           while (table.rows.length > 0) {
              table.deleteRow(0);
@@ -145,6 +170,19 @@
              var C1 = rec.insertCell(0);
              C1.innerHTML = `${data.records.length-i}`;
            }
+           // Make a yellow square
+           let divy = document.createElement("div");
+           divy.class = 'boxie'
+           if (data.totalparsed == 0){
+             divy.style = `top: ${(parseInt(coord2)+35)}px; left:${(parseInt(coord1))}px ;padding-top: ${parseInt(coord4) - parseInt(coord2)-5}px; padding-left: ${parseInt(coord3) - parseInt(coord1)-5}px;position: absolute;z-index: 1;border-width: 3px;border-style: solid;border-color: yellow;`;
+           }
+           else if (diff == 0){
+             divy.style = `top: ${(parseInt(coord2)+35)}px; left:${(parseInt(coord1))}px ;padding-top: ${parseInt(coord4) - parseInt(coord2)-5}px; padding-left: ${parseInt(coord3) - parseInt(coord1)-5}px;position: absolute;z-index: 1;border-width: 3px;border-style: solid;border-color: green;`;
+           }
+           else{
+             divy.style = `top: ${(parseInt(coord2)+35)}px; left:${(parseInt(coord1))}px ;padding-top: ${parseInt(coord4) - parseInt(coord2)-5}px; padding-left: ${parseInt(coord3) - parseInt(coord1)-5}px;position: absolute;z-index: 1;border-width: 3px;border-style: solid;border-color: red;`;
+           }
+           document.querySelector(".underImage").appendChild(divy)
 
 				}
 				else {
@@ -159,14 +197,10 @@
 			data.append('x2', coord3);
 			data.append('y2', coord4);
 			data.append('imgsrc', imgsrc);
-      data.append('style', btn_value);
+      data.append('style', style);
+      data.append('action', action);
+      data.append('page', page);
 			request.send(data);
-
-      // Make a yellow square
-      let divy = document.createElement("div");
-			divy.class = 'boxie'
-			divy.style = `top: ${(parseInt(coord2)+35)}px; left:${(parseInt(coord1))}px ;padding-top: ${parseInt(coord4) - parseInt(coord2)-5}px; padding-left: ${parseInt(coord3) - parseInt(coord1)-5}px;position: absolute;z-index: 1;border-width: 3px;border-style: solid;border-color: yellow;`;
-			document.querySelector(".underImage").appendChild(divy)
 
       // Reject autoload
 			return false;
@@ -184,7 +218,7 @@
 				const data = JSON.parse(request.responseText);
 
 				if (data.success) {
-          console.log('true')
+          alert('CSV file saved')
            }
 
 				else {
