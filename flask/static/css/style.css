@@ -1,0 +1,172 @@
+.submitbtn {
+    border: none;
+    background-color: #999999; /* Green */
+    color: #333333;
+    font-weight: 600;
+    padding: 6px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 22px;
+}
+
+html {
+	padding: 0 !important;
+}
+
+.balk {
+    height: 35px;
+    background-color: #ffe600;
+    text-align: right;
+    padding-left: 32px !important;
+    border: none;
+}
+
+.balk input {
+    color: #333333;
+    text-align: left !important;
+    font-weight: 900;
+	font-size: 24px;
+	background-color: #ffe600;
+	border: none;
+    padding-left: 32px !important;
+}
+
+
+.underImage {
+  position: relative;
+  /* z-index: -1; */
+}
+
+/* .resultblock {
+    width: 350px;
+    height: 200px;
+	background-color: #ffe600;
+	color: #333333;
+    padding: 16px;
+} */
+
+.btn {
+    border: none;
+    background-color: #ffe600;
+    color: #333333;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+	font-weight: 600;
+	margin: 8px;
+}
+
+.row {
+	display: flex;
+}
+
+.mycol1 {
+	flex-grow: 7;
+}
+
+.mycol2 {
+	flex-grow: 2;
+}
+
+.btnfile {
+	background-color: white;
+	color: #333333;
+	text-align: center;
+	display: inline-block;
+	margin-bottom: 8px;
+
+}
+
+#oik {
+	width: 827px;
+	/* z-index: -10; */
+}
+
+#image {
+	float: left;
+}
+
+#form {
+	float: left;
+}
+
+.resultblock {
+    width: 313px;
+	min-height: 200px;
+	background-color: gainsboro;
+	color: #333333 !important;
+    padding: 16px;
+    border: none;
+}
+
+.resultblock ul {
+	list-style-type: square !important;
+}
+
+body {
+	background: #333333;
+	font-family: 'Lato', sans-serif;
+	/* padding: 0 !important; */
+}
+.sums {
+    font-weight: 600;
+	background-color: #ffe600 !important;
+}
+#logo {
+	width: 3%;
+	padding: 7px;
+	padding-left: 0px
+}
+
+/* #oik {
+	border-style: solid;
+	border-color: white;
+	border-width: 1px;
+} */
+
+.pag {
+	width: 64px;
+	text-align:center;
+}
+
+.upperbar {
+	background-color: #ffe600;
+	height: 16px;
+	width: 100%;
+	margin-bottom: 16px;
+	color: #333333;
+}
+
+/* .container {
+	margin-top:32px;
+
+} */
+
+form#back {
+	display: inline-block;
+}
+
+form#forward {
+	display: inline-block;
+}
+
+
+.firstpage {
+	text-align: center;
+	color: white !important;
+}
+
+
+h1 {
+	margin: 64px;
+	margin-bottom: 16px;
+    font-weight: 900;
+    font-size: 64px;
+}
+
+h3 {
+	margin-bottom: 32px;
+}

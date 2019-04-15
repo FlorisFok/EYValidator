@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/css/imgareaselect-default.css"
+		/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
+    <script type="text/javascript" src="static/scripts/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="static/scripts/jquery.imgareaselect.pack.js"
+	></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
+	<title>EY Validator</title>
+  </head>
+
+  <body>
+			<div class="upperbar">
+				</div>
+	  <div>
+		<!-- <img src="static/img/eylogo.png" id="logo" />
+	  </div> -->
+    <div class="container">
+				<div class="row">
+					<div class="mycol1 underImage">
+						<div class="balk">
+							<form id="back" action="/page" method="post">
+								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
+								<input type="hidden" class="pag" name="pagenum" value="{{ prevnumber }}" required>
+								<input type="submit" value="<<<" />
+							</form>
+							<form id="forward" action="/page" method="post">
+								<input type="hidden" name="filename" value="{{ filename }}" class="btnfile">
+								<input type="hidden" class="pag" name="pagenum" value="{{ nextnumber }}" required>
+								<input type="submit" value=">>>" />
+							</form>
+						</div>
+						<img id="oik" src="{{ img }}" />
+					</div>
+					<div class="mycol2">
+						<div class="resultblock">
+							<h3 style=" font-weight: 600;">Result</h3>
+							<table style="border: 1px solid black; width:100%;" id="data_total">
+							</table>
+						</div>
+						<!-- Deze form is onzichtbaar en wordt gevuld met de waardes van de selectie on submit -->
+						<form id="ajax" method="post">
+								<input type="hidden" name="x1" id="x1" value="" />
+								<input type="hidden" name="y1" id="y1" value="" />
+								<input type="hidden" name="x2" id="x2" value="" />
+								<input type="hidden" name="y2" id="y2" value="" />
+								<input type="hidden" name="imgsrc" id="imgsrc" value="{{ img }}" />
+                <select style="width:150px;  padding:4px;"  id="style_select">
+                  <option value="ASum">Auto Sum</option>
+                  <option value="Sum">Sum</option>
+                  <option value="Multiply">Multiply</option>
+                  <option value="Divide">Divide</option>
+                  <option value='Mem'>Place in memory</option>
+                  <option value='csv'>create CSV</option>
+                </select>
+  							<input type="submit" name="action" id="action" value="Submit area" class="submitbtn" />
+            </form>
+            <form id="CSV">
+              <input type="text" id='filenamecsv' style="width: 150px; padding:4px;" placeholder="name csv"/>
+              <input type='submit' value='Save to CSV' class="submitbtn"/>
+            </form>
+					</div>
+				</div>
+			</div>
+    <script>
+      $(document).ready(function() {
+        $("#oik").imgAreaSelect({
+          handles: true,
+          movable: true,
+					resizable: true,
+					imageWidth: 827,
+          // Hier worden de coordinaten aan de onzichtbare form boven meegegeven
+          onSelectEnd: function(img, selection) {
+            $('input[name="x1"]').val(selection.x1);
+            $('input[name="y1"]').val(selection.y1);
+            $('input[name="x2"]').val(selection.x2);
+            $('input[name="y2"]').val(selection.y2);
+          }
+        });
+      });
+	</script>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		document.querySelector("#ajax").onsubmit = function() {
+      // Coordinates of the mouse
+			let coord1 = document.querySelector("#x1").value;
+			let coord2 = document.querySelector("#y1").value;
+			let coord3 = document.querySelector("#x2").value;
+			let coord4 = document.querySelector("#y2").value;
+
+      // Save button selection and image source
+			let imgsrc = document.querySelector("#imgsrc").value;
+      let btn_value = document.querySelector("#style_select").value;
+
+			// set up ajax request
+			const request = new XMLHttpRequest();
+			request.open('POST', '/image');
+
+			// if data is recieved, check the awnser
+			request.onload = () => {
+				const data = JSON.parse(request.responseText);
+
+				if (data.success) {
+          const table = document.querySelector("#data_total");
+          // Remove existing
+          while (table.rows.length > 0) {
+             table.deleteRow(0);
+           };
+
+           // From top to bottom, totalparsed, total and records in a table
+           var top = table.insertRow(0);
+           var C2 = top.insertCell(0);
+           var C1 = top.insertCell(0);
+
+           C2.innerHTML = `${data.totalparsed}`;
+           C1.innerHTML = "Total Parsed";
+
+           var to = table.insertRow(0);
+           var C2 = to.insertCell(0);
+           var C1 = to.insertCell(0);
+
+           C2.innerHTML = `${data.total}`;
+           C2.style = 'border-top: 2px solid black'
+
+           C1.innerHTML = `Total ${document.querySelector("#style_select").value}`;
+           C1.style = ''
+
+           for ( let i = 0; i < data.records.length; i++)
+           {
+             var obj = data.records[i];
+             let rec = table.insertRow(0);
+
+             var C2 = rec.insertCell(0);
+             C2.innerHTML = `${obj}`;
+
+             var C1 = rec.insertCell(0);
+             C1.innerHTML = `${data.records.length-i}`;
+           }
+
+				}
+				else {
+					console.log('false');
+				}
+			}
+
+			// send AJAX with data
+			const data = new FormData();
+			data.append('x1', coord1);
+			data.append('y1', coord2);
+			data.append('x2', coord3);
+			data.append('y2', coord4);
+			data.append('imgsrc', imgsrc);
+      data.append('style', btn_value);
+			request.send(data);
+
+      // Make a yellow square
+      let divy = document.createElement("div");
+			divy.class = 'boxie'
+			divy.style = `top: ${(parseInt(coord2)+35)}px; left:${(parseInt(coord1))}px ;padding-top: ${parseInt(coord4) - parseInt(coord2)-5}px; padding-left: ${parseInt(coord3) - parseInt(coord1)-5}px;position: absolute;z-index: 1;border-width: 3px;border-style: solid;border-color: yellow;`;
+			document.querySelector(".underImage").appendChild(divy)
+
+      // Reject autoload
+			return false;
+		}
+    document.querySelector("#CSV").onsubmit = function() {
+      // Save filename
+			let csv_file = document.querySelector("#filenamecsv").value;
+
+			// set up ajax request
+			const request = new XMLHttpRequest();
+			request.open('POST', '/csv');
+
+			// if data is recieved, check the awnser
+			request.onload = () => {
+				const data = JSON.parse(request.responseText);
+
+				if (data.success) {
+          console.log('true')
+           }
+
+				else {
+					console.log('false');
+				}
+			}
+
+			// send AJAX with data
+			const data = new FormData();
+      data.append('filename', csv_file);
+			request.send(data);
+
+
+      // Reject autoload
+			return false;
+		}
+	});
+	</script>
+  </body>
+</html>

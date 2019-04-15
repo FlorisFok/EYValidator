@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>- My Flask Application</title>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+   <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+   <script src="/static/scripts/modernizr-2.6.2.js"></script>
+   <title>EY Validator</title>
+</head>
+
+<body>
+    <div class="upperbar">
+    </div>
+
+    <div class="container firstpage">
+        <img href="../static/img/eylogo.png"/>
+        <h1>EY Validator</h1>
+        <h3><em>Checks the numbers for you</em></h3>
+        <form action="/upload" method="post" enctype=multipart/form-data >
+            <input type="file" name="the_file" value="Select File" class="btnfile" title=" " required>
+            </br>
+            <label>Number of Pages: </label>
+            <input type="number" class="pag" name="pagenum" value="1" required></br>
+            <input type="submit" value="Upload File" name="submit" class="btn">
+        </form>
+    </div>
+
+   <!-- <script src="/static/scripts/jquery-1.10.2.js"></script>
+   <script src="/static/scripts/bootstrap.js"></script>
+   <script src="/static/scripts/respond.js"></script> -->
+
+</body>
+</html>
